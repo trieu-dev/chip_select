@@ -42,8 +42,9 @@ class _MyFormState extends State<MyForm> {
         children: [
           MultiSelect(
             controller: _controller,
-            label: 'Your name',
-            hint: 'Enter your name',
+            label: 'Country',
+            hint: 'Enter your country',
+            items: countries,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Required';
@@ -67,3 +68,26 @@ class _MyFormState extends State<MyForm> {
     );
   }
 }
+
+const List<String> countries = [
+  'Vietnam',
+  'Japan',
+  'South Korea',
+  'China',
+  'Thailand',
+  'Singapore',
+  'Malaysia',
+  'Indonesia',
+  'Philippines',
+  'India',
+  'Australia',
+  'New Zealand',
+  'United States',
+  'Canada',
+  'United Kingdom',
+  'Germany',
+  'France',
+  'Italy',
+  'Spain',
+  'Brazil',
+];
