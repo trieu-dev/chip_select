@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:multi_select/multi_select.dart';
 
 void main() {
-  runApp(const MyExampleApp());
+  runApp(const MyApp());
 }
 
-class MyExampleApp extends StatelessWidget {
-  const MyExampleApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
