@@ -8,6 +8,7 @@ class MultiSelect extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onChanged;
   final List<String> items;
+  final List<String> selectedItems;
   final ValueChanged<String>? onSelected;
   
   const MultiSelect({
@@ -18,6 +19,7 @@ class MultiSelect extends StatefulWidget {
     this.validator,
     this.onChanged,
     required this.items,
+    required this.selectedItems,
     this.onSelected,
   });
 
@@ -72,7 +74,6 @@ class _MultiSelectState extends State<MultiSelect> {
                       return ListTile(
                         title: Text(item),
                         onTap: () {
-                          _controller.text = item;
                           widget.onSelected?.call(item);
                           _removeOverlay();
                         },
@@ -104,25 +105,53 @@ class _MultiSelectState extends State<MultiSelect> {
 
   @override
   Widget build(BuildContext context) {
-    return CompositedTransformTarget(
-      link: _layerLink,
-      child: TextFormField(
-        key: _fieldKey,
-        controller: _controller,
-        decoration: InputDecoration(
-          labelText: widget.label,
-          border: const OutlineInputBorder(),
-        ),
-        onTap: () => _showOverlay(widget.items),
-        onChanged: (value) {
-          var list = widget.items
-              .where((item) =>
-                  item.toLowerCase().contains(value.toLowerCase()))
-              .toList();
-          _removeOverlay();
-          _showOverlay(list);
-        },
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(16),
       ),
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+        _buildSelectedItems(),
+        CompositedTransformTarget(
+          link: _layerLink,
+          child: TextFormField(
+            key: _fieldKey,
+            controller: _controller,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+            ),
+            onTap: () => _showOverlay(widget.items),
+            onChanged: (value) {
+              var list = widget.items
+                  .where((item) =>
+                      item.toLowerCase().contains(value.toLowerCase()))
+                  .toList();
+              _removeOverlay();
+              _showOverlay(list);
+            },
+          )
+        )
+      ]),
+    );
+  }
+
+  Widget _buildSelectedItems() {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: widget.selectedItems.map((item) {
+        return Chip(
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          label: Text(item),
+          onDeleted: () {
+            widget.onSelected?.call(item);
+            setState(() {});
+          },
+        );
+      }).toList(),
     );
   }
 }

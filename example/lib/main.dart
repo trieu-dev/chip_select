@@ -33,6 +33,17 @@ class _MyFormState extends State<MyForm> {
   final _formKey = GlobalKey<FormState>();
   final _controller = TextEditingController();
 
+  final selectedItems = <String>[];
+  void _onSelected(String item) {
+    setState(() {
+      if (selectedItems.contains(item)) {
+        selectedItems.remove(item);
+      } else {
+        selectedItems.add(item);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -41,10 +52,12 @@ class _MyFormState extends State<MyForm> {
         mainAxisSize: MainAxisSize.min,
         children: [
           MultiSelect(
+            selectedItems: selectedItems,
             controller: _controller,
             label: 'Country',
             hint: 'Enter your country',
             items: countries,
+            onSelected: _onSelected,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Required';
