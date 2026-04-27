@@ -11,78 +11,94 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('My Package Example')),
-        body: const Padding(
-          padding: EdgeInsets.all(16),
-          child: MyForm(),
+      title: 'MultiSelect Example',
+      theme: ThemeData(
+        colorSchemeSeed: Colors.indigo,
+        useMaterial3: true,
+      ),
+      home: const ExamplePage(),
+    );
+  }
+}
+
+class ExamplePage extends StatefulWidget {
+  const ExamplePage({super.key});
+
+  @override
+  State<ExamplePage> createState() => _ExamplePageState();
+}
+
+class _ExamplePageState extends State<ExamplePage> {
+  final _formKey = GlobalKey<FormState>();
+
+  List<String> _selectedCountries = [];
+  List<String> _selectedLanguages = [];
+
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Countries: ${_selectedCountries.join(', ')}\n'
+            'Languages: ${_selectedLanguages.join(', ')}',
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('MultiSelect Example')),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // ── Countries ──────────────────────────────────────────────────
+              MultiSelect(
+                label: 'Countries',
+                hint: 'Search countries…',
+                items: _kCountries,
+                selectedItems: _selectedCountries,
+                onChanged: (updated) =>
+                    setState(() => _selectedCountries = updated),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select at least one country';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+
+              // ── Languages ─────────────────────────────────────────────────
+              MultiSelect(
+                label: 'Programming Languages',
+                hint: 'Search languages…',
+                items: _kLanguages,
+                selectedItems: _selectedLanguages,
+                onChanged: (updated) =>
+                    setState(() => _selectedLanguages = updated),
+              ),
+              const SizedBox(height: 32),
+
+              FilledButton(
+                onPressed: _submit,
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class MyForm extends StatefulWidget {
-  const MyForm({super.key});
-
-  @override
-  State<MyForm> createState() => _MyFormState();
-}
-
-class _MyFormState extends State<MyForm> {
-  final _formKey = GlobalKey<FormState>();
-  final _controller = TextEditingController();
-
-  final selectedItems = <String>[];
-  void _onSelected(String item) {
-    setState(() {
-      if (selectedItems.contains(item)) {
-        selectedItems.remove(item);
-      } else {
-        selectedItems.add(item);
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          MultiSelect(
-            selectedItems: selectedItems,
-            controller: _controller,
-            label: 'Country',
-            hint: 'Enter your country',
-            items: countries,
-            onSelected: _onSelected,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Required';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Hello ${_controller.text}')),
-                );
-              }
-            },
-            child: const Text('Submit'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-const List<String> countries = [
+const List<String> _kCountries = [
   'Vietnam',
   'Japan',
   'South Korea',
@@ -103,4 +119,18 @@ const List<String> countries = [
   'Italy',
   'Spain',
   'Brazil',
+];
+
+const List<String> _kLanguages = [
+  'Dart',
+  'Kotlin',
+  'Swift',
+  'JavaScript',
+  'TypeScript',
+  'Python',
+  'Rust',
+  'Go',
+  'Java',
+  'C#',
+  'C++',
 ];
