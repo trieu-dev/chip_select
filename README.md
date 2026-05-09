@@ -1,4 +1,4 @@
-# multi_select
+# chip_select
 
 A customizable multi-select Flutter widget that displays selected items as
 deletable chips and provides a live-search dropdown for picking more items.
